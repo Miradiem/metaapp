@@ -1,23 +1,32 @@
-﻿using System;
+﻿using metaapp.WeatherApi;
 using System.Threading.Tasks;
 
-namespace LearningConsoleApi
+namespace metaapp
 {
     public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            try
+            return await CommandLineArgs.Parse(args, async argsCities =>
             {
-                await Container.Build(args);
-              
-            }
-            catch (Exception)
-            {
+                var api = await new WeatherApiLogin(
+                new ApiClient("https://metasite-weather-api.herokuapp.com")
+                    .Create())
+                .Login(new Credentials("meta", "site"));
 
-                Console.WriteLine("Oh no..!");
-            }
-            Console.ReadLine();
+                while (true)//Daug paprastestis timeris, nei naudojau, reikai sugalvoti kaip perkelti i metoda necopinant 
+                {
+                    foreach (var town in argsCities)
+                    {
+
+                        WeatherDisplay.Show(await api.WeatherData(town));
+                        
+                    }
+                    await Task.Delay(5000);
+                }
+
+                return 0;
+            });
         }
     }
 }

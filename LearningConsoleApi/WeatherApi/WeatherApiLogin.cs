@@ -1,19 +1,25 @@
 ﻿using Flurl.Http;
 using System.Threading.Tasks;
 
-namespace LearningConsoleApi.NewAPI
+namespace metaapp.WeatherApi
 {
     public class WeatherApiLogin
     {
-        public async Task<WeatherApi> Login(Credentials credentials)
-        {
-            var authorizeUrl = "https://metasite-weather-api.herokuapp.com/api/authorize";
+        private readonly IFlurlClient _client;
 
-            var authenticationToken = await authorizeUrl
+        public WeatherApiLogin(IFlurlClient client)
+        {
+            _client = client;
+        }
+        public async Task<AuthorizedWeatherApi> Login(Credentials credentials)
+        {
+            var authenticationToken = await _client
+                .Request("/api/authorize")
                 .WithHeader("content-type", "application/json")
                 .PostJsonAsync(credentials.ToJObject())
                 .ReceiveJson<AuthenticationBearer>();
-            return new WeatherApi(authenticationToken.Bearer);
+
+            return new AuthorizedWeatherApi(authenticationToken.Bearer, _client);
         }
 
         private class AuthenticationBearer

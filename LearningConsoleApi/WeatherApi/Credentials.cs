@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace LearningConsoleApi
+namespace metaapp.WeatherApi
 {
     public class Credentials
     {
