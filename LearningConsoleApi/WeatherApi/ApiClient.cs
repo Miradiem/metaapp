@@ -1,9 +1,4 @@
 ﻿using Flurl.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace metaapp.WeatherApi
 {
@@ -19,6 +14,19 @@ namespace metaapp.WeatherApi
         public IFlurlClient Create()
         {
             var client = new FlurlClient(_baseUrl);
+
+            client.Settings.BeforeCall = (call) =>
+            {
+                Logging.Log.Info($"Calling {call.HttpRequestMessage.RequestUri}");
+            };
+            client.Settings.AfterCall = (call) =>
+            {
+                Logging.Log.Info($"Call status code: {call.Response.StatusCode}");
+            };
+            client.Settings.OnError = (call) =>
+            {
+                Logging.Log.Error(call.HttpResponseMessage.ReasonPhrase);
+            };
 
             return client;
         }

@@ -1,4 +1,6 @@
-﻿using metaapp.WeatherApi;
+﻿using metaapp.App;
+using metaapp.Storring;
+using metaapp.WeatherApi;
 using System.Threading.Tasks;
 
 namespace metaapp
@@ -7,26 +9,35 @@ namespace metaapp
     {
         public static async Task<int> Main(string[] args)
         {
-            return await CommandLineArgs.Parse(args, async argsCities =>
+            try
             {
-                var api = await new WeatherApiLogin(
-                new ApiClient("https://metasite-weather-api.herokuapp.com")
-                    .Create())
-                .Login(new Credentials("meta", "site"));
+                Logging.Log.Info($"Starting app: {string.Join(" ", args)}");
 
-                while (true)//Daug paprastestis timeris, nei naudojau, reikai sugalvoti kaip perkelti i metoda necopinant 
+                return await CommandLineArgs.Parse(args, async argsCities =>
                 {
-                    foreach (var town in argsCities)
-                    {
+                    var api = await new WeatherApiLogin(
+                    new ApiClient("https://metasite-weather-api.herokuapp.com")
+                        .Create())
+                    .Login(new Credentials("meta", "site"));
 
-                        WeatherDisplay.Show(await api.WeatherData(town));
-                        
-                    }
-                    await Task.Delay(5000);
-                }
+                    var file = new WeatherFile("weatherData.txt");
+                    var display = new WeatherDisplay();
+                    var commands = new WeatherCommands(argsCities, api, file, display);
 
-                return 0;
-            });
+                    await new WeatherPeriodTimer(commands).Invoke(30000);
+
+                    Logging.Log.Info("Exiting");
+
+                    return 0;
+                });
+            }
+            catch (System.Exception ex)
+            {
+                Logging.Log.Error("Unknown error", ex);
+
+                return 1;
+            }
+           
         }
     }
 }

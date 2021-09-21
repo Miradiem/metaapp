@@ -1,5 +1,4 @@
 ﻿using Flurl.Http;
-using metaapp.WeatherApi;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

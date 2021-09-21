@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 
-namespace metaapp
+namespace metaapp.App
 {
     public class CommandLineArgs
     {

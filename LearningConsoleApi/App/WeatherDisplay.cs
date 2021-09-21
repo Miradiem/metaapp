@@ -1,13 +1,13 @@
 ﻿using metaapp.WeatherApi;
 using System;
 
-namespace metaapp
+namespace metaapp.App
 {
     public class WeatherDisplay
     {
-        public static void Show(WeatherModel weather)
+        public void Show(WeatherModel weather)
         {
-            Console.WriteLine("=================================");
+            Console.WriteLine("*********************************");
             Console.WriteLine($"City: {weather.City}");
             Console.WriteLine($"Temperature: {weather.Temperature}");
             Console.WriteLine($"Precipitation: {weather.Precipitation}");

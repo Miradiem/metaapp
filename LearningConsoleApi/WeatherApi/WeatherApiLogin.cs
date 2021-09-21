@@ -1,4 +1,5 @@
 ﻿using Flurl.Http;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace metaapp.WeatherApi
@@ -19,12 +20,13 @@ namespace metaapp.WeatherApi
                 .PostJsonAsync(credentials.ToJObject())
                 .ReceiveJson<AuthenticationBearer>();
 
-            return new AuthorizedWeatherApi(authenticationToken.Bearer, _client);
+            return new AuthorizedWeatherApi(authenticationToken.Token, _client);
         }
 
         private class AuthenticationBearer
         {
-            public string Bearer { get; set; }
+            [JsonProperty("bearer")]
+            public string Token { get; set; }
         }
     }
 }
